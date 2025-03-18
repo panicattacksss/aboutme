@@ -1,0 +1,41 @@
+body {
+    overflow-x: hidden;
+    font-family: Arial, sans-serif;
+    height: 300vh;
+}
+.wrapper {
+    margin-top: -10px;
+    margin-left: -10px; 
+}
+
+  @font-face {
+      font-family: 'GT Eesti Pro Display';
+      src: url('assets\gteestiprodisplay_ultrabold.otf') format('opentype');
+      font-weight: 900;
+      font-style: normal;
+  }
+  @font-face {
+    font-family: 'GT Eesti Pro Text';
+    src: url('assets\gteestiprotext_bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GT Eesti Pro Display';
+    src: url('assets\gteestiprodisplay_medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GT Eesti Pro Display';
+    src: url('assets\gteestiprodisplay_regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GT Eesti Pro Text';
+    src: url('assets\gteestiprotext_medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
