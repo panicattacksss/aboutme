@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>...</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+
+        body {
+            background: #0c0c0c;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Текстура фона */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(40, 40, 40, 0.3) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(30, 30, 30, 0.3) 0%, transparent 20%),
+                repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(20, 20, 20, 0.1) 2px);
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(15, 15, 15, 0.95);
+            border: 1px solid #2a2a2a;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        /* Эффект свечения */
+        .container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #8a0303, #3a0000);
+            box-shadow: 0 0 10px rgba(138, 3, 3, 0.5);
+        }
+
+        .header {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid #2a2a2a;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #c0c0c0;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.6;
+            letter-spacing: 1px;
+        }
+
+        .progress-container {
+            height: 3px;
+            background: #1a1a1a;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #8a0303, #3a0000);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .question-container {
+            padding: 30px;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .question {
+            animation: fadeIn 0.8s ease-out;
+            position: absolute;
+            width: calc(100% - 60px);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: none;
+            pointer-events: none;
+        }
+
+        .question.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-title {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: #b0b0b0;
+            border-left: 3px solid #8a0303;
+            padding-left: 15px;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        input, textarea {
+            width: 100%;
+            background: rgba(30, 30, 30, 0.7);
+            border: 1px solid #2a2a2a;
+            border-radius: 3px;
+            padding: 12px 15px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #8a0303;
+            box-shadow: 0 0 8px rgba(138, 3, 3, 0.3);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #555;
+        }
+
+        .counter {
+            text-align: right;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px 30px;
+        }
+
+        button {
+            background: rgba(40, 40, 40, 0.8);
+            color: #b0b0b0;
+            border: 1px solid #3a3a3a;
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: rgba(60, 60, 60, 0.8);
+            border-color: #5a5a5a;
+            color: #d0d0d0;
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        #btn-next {
+            background: rgba(80, 10, 10, 0.7);
+            border-color: #5a0000;
+            color: #e0e0e0;
+        }
+
+        #btn-next:hover:not(:disabled) {
+            background: rgba(110, 10, 10, 0.8);
+            box-shadow: 0 0 10px rgba(138, 3, 3, 0.3);
+        }
+
+        #btn-submit {
+            background: rgba(100, 10, 10, 0.9);
+            border-color: #6a0000;
+            color: #fff;
+        }
+
+        #btn-submit:hover {
+            background: rgba(130, 10, 10, 1);
+            box-shadow: 0 0 15px rgba(138, 3, 3, 0.5);
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2rem;
+            background: #b0b0b0;
+            margin-left: 3px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.4;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .error-message {
+            color: #8a0303;
+            font-size: 0.9rem;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1></h1>
+            <p class="subtitle">интересны любые ответы</p>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="question-container">
+            <!-- Вопрос 1 -->
+            <div class="question active" id="q1">
+                <div class="question-title">как ты познакомился с моей музыкой?<span class="typing-cursor"></span></div>
+                <input type="text" id="discovery" placeholder="соцсети, друзья, случайно...">
+                <div class="error-message" id="error1">ну хоть чуть-чуть</div>
+            </div>
+            
+            <!-- Вопрос 2 -->
+            <div class="question" id="q2">
+                <div class="question-title">назови 3 артиста, с которыми ассоциируешь моё творчество<span class="typing-cursor"></span></div>
+                <input type="text" id="similar1" placeholder="артист 1">
+                <input type="text" id="similar2" placeholder="артист 2">
+                <input type="text" id="similar3" placeholder="артист 3">
+                <div class="error-message" id="error2">хотя бы одного</div>
+            </div>
+            
+            <!-- Вопрос 3 -->
+            <div class="question" id="q3">
+                <div class="question-title">кто твои 3 любимых артиста?<span class="typing-cursor"></span></div>
+                <input type="text" id="fav1" placeholder="артист 1">
+                <input type="text" id="fav2" placeholder="артист 2">
+                <input type="text" id="fav3" placeholder="артист 3">
+                <div class="error-message" id="error3">хотя бы одного</div>
+            </div>
+            
+            <!-- Вопрос 4 -->
+            <div class="question" id="q4">
+                <div class="question-title">какие ожидания от моего предстоящего релиза?<span class="typing-cursor"></span></div>
+                <textarea id="expectations" placeholder="максимально честно" rows="4"></textarea>
+                <div class="counter"><span id="char-count">0</span>/500</div>
+                <div class="error-message" id="error4">ну хоть чуть-чуть</div>
+            </div>
+            
+            <!-- Вопрос 5 -->
+            <div class="question" id="q5">
+                <div class="question-title">как ты относишься к экспериментам в музыке?<span class="typing-cursor"></span></div>
+                <textarea id="experiments" placeholder="бубубубубу" rows="4"></textarea>
+                <div class="counter"><span id="char-count2">0</span>/500</div>
+                <div class="error-message" id="error5">ну хоть чуть-чуть</div>
+            </div>
+            
+            <!-- Вопрос 6 -->
+            <div class="question" id="q6">
+                <div class="question-title">какие ощущения вызывает у тебя моя музыка?<span class="typing-cursor"></span></div>
+                <textarea id="feelings" placeholder="эмоции, ассоциации..." rows="4"></textarea>
+                <div class="counter"><span id="char-count3">0</span>/500</div>
+                <div class="error-message" id="error6">ну хоть чуть-чуть</div>
+            </div>
+            
+            <!-- Вопрос 7 -->
+            <div class="question" id="q7">
+                <div class="question-title">твой Telegram ID (@username)<span class="typing-cursor"></span></div>
+                <input type="text" id="telegram" placeholder="@username">
+                <div class="error-message" id="error7">тэлэграааам</div>
+            </div>
+        </div>
+        
+        <div class="btn-container">
+            <button id="btn-prev" disabled><i class="fas fa-arrow-left"></i> Назад</button>
+            <button id="btn-next">далее <i class="fas fa-arrow-right"></i></button>
+            <button id="btn-submit" style="display: none;">удалить</button>
+        </div>
+        
+        <div class="footer">
+            надеюсь это будет прикольный экспериенс
+        </div>
+    </div>
+
+    <script>
+        const TELEGRAM_BOT_TOKEN = '7977982043:AAGoE7g2pBwt94ESocT3GSnUOZ-eWOO0KaY';
+        const TELEGRAM_CHAT_ID = '6213180239'; 
+
+        let currentQuestion = 1;
+        const totalQuestions = 7;
+        const progressBar = document.getElementById('progress-bar');
+        
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnSubmit = document.getElementById('btn-submit');
+        
+        updateProgressBar();
+        
+        btnNext.addEventListener('click', nextQuestion);
+        btnPrev.addEventListener('click', prevQuestion);
+        btnSubmit.addEventListener('click', submitForm);
+        
+        document.getElementById('expectations').addEventListener('input', function() {
+            document.getElementById('char-count').textContent = this.value.length;
+        });
+        
+        document.getElementById('experiments').addEventListener('input', function() {
+            document.getElementById('char-count2').textContent = this.value.length;
+        });
+        
+        document.getElementById('feelings').addEventListener('input', function() {
+            document.getElementById('char-count3').textContent = this.value.length;
+        });
+        
+        function nextQuestion() {
+            if (!validateCurrentQuestion()) return;
+            
+            document.getElementById(`q${currentQuestion}`).classList.remove('active');
+            
+            currentQuestion++;
+            
+            document.getElementById(`q${currentQuestion}`).classList.add('active');
+            
+            updateUI();
+        }
+        
+        function prevQuestion() {
+            document.getElementById(`q${currentQuestion}`).classList.remove('active');
+            
+            currentQuestion--;
+            
+            document.getElementById(`q${currentQuestion}`).classList.add('active');
+            
+            updateUI();
+        }
+        
+        function updateUI() {
+            updateProgressBar();
+            
+            btnPrev.disabled = (currentQuestion === 1);
+            
+            if (currentQuestion === totalQuestions) {
+                btnNext.style.display = 'none';
+                btnSubmit.style.display = 'block';
+            } else {
+                btnNext.style.display = 'block';
+                btnSubmit.style.display = 'none';
+            }
+        }
+        
+        function updateProgressBar() {
+            const progress = (currentQuestion / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+        
+        function validateCurrentQuestion() {
+            let isValid = true;
+            const errorElement = document.getElementById(`error${currentQuestion}`);
+            
+            switch(currentQuestion) {
+                case 1:
+                    if (!document.getElementById('discovery').value.trim()) {
+                        errorElement.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        errorElement.style.display = 'none';
+                    }
+                    break;
+                    
+                case 2:
+                    const similar1 = document.getElementById('similar1').value.trim();
+                    const similar2 = document.getElementById('similar2').value.trim();
+                    const similar3 = document.getElementById('similar3').value.trim();
+                    
+                    if (!similar1 && !similar2 && !similar3) {
+                        errorElement.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        errorElement.style.display = 'none';
+                    }
+                    break;
+                    
+                case 3:
+                    const fav1 = document.getElementById('fav1').value.trim();
+                    const fav2 = document.getElementById('fav2').value.trim();
+                    const fav3 = document.getElementById('fav3').value.trim();
+                    
+                    if (!fav1 && !fav2 && !fav3) {
+                        errorElement.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        errorElement.style.display = 'none';
+                    }
+                    break;
+                    
+                case 4:
+                    if (!document.getElementById('expectations').value.trim()) {
+                        errorElement.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        errorElement.style.display = 'none';
+                    }
+                    break;
+                    
+                case 5:
+                    if (!document.getElementById('experiments').value.trim()) {
+                        errorElement.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        errorElement.style.display = 'none';
+                    }
+                    break;
+                    
+                case 6:
+                    if (!document.getElementById('feelings').value.trim()) {
+                        errorElement.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        errorElement.style.display = 'none';
+                    }
+                    break;
+                    
+                case 7:
+                    const telegram = document.getElementById('telegram').value.trim();
+                    if (!telegram || !telegram.startsWith('@')) {
+                        errorElement.style.display = 'block';
+                        errorElement.textContent = 'Пожалуйста, укажите корректный Telegram ID (@username)';
+                        isValid = false;
+                    } else {
+                        errorElement.style.display = 'none';
+                    }
+                    break;
+            }
+            
+            return isValid;
+        }
+        
+        async function submitForm() {
+            if (!validateCurrentQuestion()) return;
+            
+            const formData = {
+                discovery: document.getElementById('discovery').value,
+                similarArtists: [
+                    document.getElementById('similar1').value,
+                    document.getElementById('similar2').value,
+                    document.getElementById('similar3').value
+                ].filter(a => a.trim()),
+                favoriteArtists: [
+                    document.getElementById('fav1').value,
+                    document.getElementById('fav2').value,
+                    document.getElementById('fav3').value
+                ].filter(a => a.trim()),
+                expectations: document.getElementById('expectations').value,
+                experiments: document.getElementById('experiments').value,
+                feelings: document.getElementById('feelings').value,
+                telegram: document.getElementById('telegram').value
+            };
+            
+            const message = `
+новый отзыв
+
+как узнал о музыке:
+${formData.discovery}
+
+ассоциации
+${formData.similarArtists.join(', ') || 'Не указано'}
+
+любимые артисты
+${formData.favoriteArtists.join(', ') || 'Не указано'}
+
+ожидания от релиза:
+${formData.expectations || 'Не указано'}
+
+отношение к экспериментам: 
+${formData.experiments || 'Не указано'}
+
+ощущения от музыки:
+${formData.feelings || 'Не указано'}
+
+*Telegram:* ${formData.telegram}
+            `;
+            
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.ok) {
+                    alert('спасибо за ответы!');
+                    resetForm();
+                } else {
+                    alert('ошибкаааа хз почему');
+                }
+            } catch (error) {
+                console.error('ошибкаааа хз почему', error);
+                alert('ошибкаааа хз почему');
+            }
+        }
+        
+        function resetForm() {
+            document.querySelectorAll('input, textarea').forEach(el => {
+                el.value = '';
+            });
+            
+            document.querySelectorAll('.counter span').forEach(el => {
+                el.textContent = '0';
+            });
+            
+            document.querySelectorAll('.question').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById('q1').classList.add('active');
+            currentQuestion = 1;
+            updateUI();
+            updateProgressBar();
+            
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
